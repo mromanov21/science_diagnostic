@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <br>
+    <form action="{% url 'csv_reader:answers' %}" method="get" class="row row-cols-lg-auto g-3 align-items-center">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="field" class="visually-hidden">Preference</label>
+            <select id="field" name="field" class="form-select" id="inlineFormSelectPref">
+                <option selected>Choose...</option>
+                <option value="user_id">ID</option>
+                <option value="name">Фамилия, Имя, Отчество</option>
+                <option value="sex">Пол</option>
+                <option value="age">Возраст</option>
+                <option value="marital_status">Семейное положение</option>
+                <option value="children">Детность</option>
+                <option value="work_status">Занятость</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="value"></label>
+            <input type="text" id="value" name="value" placeholder="Enter value">
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+
+    {% if msg %}
+    {{ msg }}
+    {% endif %}
+
+    {% if page_obj.object_list %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Фамилия, Имя, Отчество</th>
+            <th scope="col">Результат</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for _, user in page_obj.object_list %}
+        <tr>
+            <th scope="row">{{ index|add:forloop.counter }}</th>
+            <td>{{ user.0 }}</td>
+            <td title="{{user.1}}">{{ user.1|slice:":40" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a class="btn btn-primary" href="?page=1">&laquo; first</a>
+            <a class="btn btn-primary" href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-primary" href="?page={{ page_obj.next_page_number }}">next</a>
+            <a class="btn btn-primary" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

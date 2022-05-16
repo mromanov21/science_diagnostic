@@ -10,5 +10,4 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-dev
 COPY . /app
 
-
 EXPOSE 8000
